@@ -1,0 +1,8 @@
+services:
+  haskell:
+    image: haskell:latest
+    container_name: sudoku
+    working_dir: /root/workspace
+    volumes:
+      - ./:/root/workspace
+    tty: true
