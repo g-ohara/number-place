@@ -1,8 +1,7 @@
 services:
   haskell:
-    image: haskell:latest
-    container_name: sudoku
-    working_dir: /root/workspace
+    image: haskell:9.8.2
+    working_dir: /home/
     volumes:
-      - ./:/root/workspace
-    tty: true
+      - ./:/home/
+    command: ghc solver.hs
