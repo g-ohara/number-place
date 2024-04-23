@@ -8,13 +8,13 @@ You need [Git](https://git-scm.com/) and [Docker](https://www.docker.com/) insta
    ```sh
    git clone https://github.com/g-ohara/number-place.git && cd number-place
    ```
-1. Run container:
-   ```sh
-   docker compose up -d
-   ```
 1. Compile the app:
    ```sh
-   docker compose exec haskell ghc solver.hs
+   docker run -v ./:/home/ -w /home/ --rm haskell:9.8.2 ghc solver.hs
+   ```
+   Or if you have installed [Docker Compose](https://docs.docker.com/compose/):
+   ```sh
+   docker compose run --rm haskell
    ```
 1. Then you will get the executable ```solver``` file.
 ### Solve Problem
