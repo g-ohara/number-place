@@ -1,46 +1,44 @@
+{-# OPTIONS_GHC -Wall #-}
+
 import Data.Char
 import Data.Function
 import Data.List
 import Data.Maybe
+import Text.Read
+import Control.Monad
+
+newtype Puzzle = Puzzle [Int]
+
+instance Show Puzzle where
+    show (Puzzle puzzle) = intercalate "\n" $ chunksOf 9 (map intToDigit puzzle)
+        where
+            chunksOf _ [] = []
+            chunksOf n xs = take n xs : chunksOf n (drop n xs)
+
+instance Read Puzzle where
+    readsPrec _ str = [(Puzzle puzzle, "") | length puzzle == 81]
+        where puzzle = map (\c -> if isDigit c then digitToInt c else 0) str
 
 main :: IO ()
 main = do
     solutions <- solve <$> getPuzzle
     if null solutions
         then putStrLn "No solution found."
-        else do
-            putStrLn "Solution(s):"
-            mapM_ printPuzzle solutions
+        else putStrLn "Solution(s):" *> mapM_ print solutions
 
--- I/O functions
-
-getPuzzle :: IO [Int]
+getPuzzle :: IO Puzzle
 getPuzzle = do
     putStrLn "Please enter the puzzle, row by row, with '.' for empty cells."
-    puzzle <- map (\c -> if c == '.' then 0 else digitToInt c) <$> getStrPuzzle 9
-    if length puzzle == 81 && all (\x -> (x >= 0) && (x <= 9)) puzzle
-        then return puzzle
-        else putStrLn "Invalid puzzle. Please try again." *> getPuzzle
+    puzzle <- readMaybe . filter (/='\n') . unlines <$> replicateM 9 getLine
+    maybe (putStrLn "Invalid puzzle. Try again." *> getPuzzle) return puzzle
 
-getStrPuzzle :: Int -> IO String
-getStrPuzzle 0 = return ""
-getStrPuzzle n = (++) <$> getLine <*> getStrPuzzle (n - 1)
-
-printPuzzle :: [Int] -> IO ()
-printPuzzle [] = return ()
-printPuzzle puzzle = do
-    putStrLn $ map intToDigit $ take 9 puzzle
-    printPuzzle $ drop 9 puzzle
-
--- Solver functions
-
-solve :: [Int] -> [[Int]]
-solve puzzle = if isNothing pos then [puzzle] else solutions
+solve :: Puzzle -> [Puzzle]
+solve (Puzzle puzzle) = if isNothing pos then [Puzzle puzzle] else solutions
     where
         pos = elemIndex 0 puzzle
         numList = possibleList puzzle $ fromJust pos
         puzzles = map (\x -> replace (fromJust pos) x puzzle) numList
-        solutions = concatMap solve puzzles
+        solutions = concatMap (solve . Puzzle) puzzles
 
 possibleList :: [Int] -> Int -> [Int]
 possibleList puzzle pos = [1..9] \\ [puzzle !! i | i <- posList]
