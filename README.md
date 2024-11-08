@@ -3,24 +3,10 @@
 (Number Place is also called "Sudoku (数独)", which is registered trademark in Japan.)
 ## Getting Started
 ### Setup
-You need [Git](https://git-scm.com/) and [Docker](https://www.docker.com/) installed on your computer.
-1. Clone this repo:
+You need [Cabal](https://www.haskell.org/cabal/) installed on your computer.
+1. Compile and run:
    ```sh
-   git clone https://github.com/g-ohara/number-place.git && cd number-place
-   ```
-1. Compile the app:
-   ```sh
-   docker run -v ./:/home/ -w /home/ --rm haskell:9.8.2 ghc solver.hs
-   ```
-   Or if you have installed [Docker Compose](https://docs.docker.com/compose/):
-   ```sh
-   docker compose run --rm haskell
-   ```
-1. Then you will get the executable ```solver``` file.
-### Solve Problem
-1. Run the app:
-   ```sh
-   ./solver
+   cabal run
    ```
 1. Input your problem with "." for empty cells, for example:
    ```sh

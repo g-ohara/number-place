@@ -1,7 +1,0 @@
-services:
-  haskell:
-    image: haskell:9.8.2
-    working_dir: /home/
-    volumes:
-      - ./:/home/
-    command: ghc solver.hs
